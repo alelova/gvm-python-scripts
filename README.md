@@ -1,5 +1,5 @@
 # gvm-python-scripts
-some scripts to get gvm info, and get a latex report
+Some scripts to get gvm info, hosts, vulnerabilities, and get a latex report.
 
 Some previus configuration
 
