@@ -91,9 +91,13 @@ def print_reports(gmp, from_date, to_date):
         high = int(results.xpath('count(//result/threat[text()="High"])'))
         sum_high += high
         if high >0: server_high += 1
-        best_os_cpe_report_id = asset.xpath(
-            'host/detail/name[text()="best_os_cpe"]/../source/@id'
-        )[0]
+
+        best_os_cpe_report_id = asset.xpath('host/detail/name[text()="best_os_cpe"]/../source/@id')
+        if len(best_os_cpe_report_id)>0:
+            best_os_cpe_report_id = best_os_cpe_report_id[0]
+        else:
+            best_os_cpe_report_id = "no disponible"
+
         hostname=hostname.split('.',1)[0]
         table_data.append(
             [hostname,ip, best_os_cpe_report_id, high, medium, low]
@@ -133,7 +137,7 @@ def print_reports(gmp, from_date, to_date):
     print('\end{verbatim}')   
 
 def print_report_vulns(gmp, from_date, to_date):
-    vulns_filter = "severity>7 sort-reverse=severity"
+    vulns_filter = "severity>7 sort-reverse=severity rows=-1"
     vulns_xml = gmp.get_vulnerabilities(filter=vulns_filter)
     #pretty_print(vulns_xml)
     table_data_OS_vuln = [['Severity', 'name']]
@@ -149,12 +153,12 @@ def print_report_vulns(gmp, from_date, to_date):
     print('\section{Top Vulnerabilidades }')   
     print('\subsection {Lista de vulneralidades End of Life}')
     print('\\begin{itemize}')
-    for item in table_data_OS_vuln: print ('\\item '+ item[0] +', ' +item[1])
+    for item in table_data_OS_vuln: print ('\\item \\begin{verbatim}'+ item[0] +', ' +item[1]+' \\end{verbatim}')
     print('\\end{itemize}')
 
     print('\subsection {Lista de vulneralidades presentes de categoria High}')
     print('\\begin{itemize}')
-    for item in table_data_vuln: print ('\\item '+ item[0] +', ' +item[1])
+    for item in table_data_vuln: print ('\\item \\begin{verbatim}'+ item[0] +', ' +item[1]+' \\end{verbatim}')
     print('\\end{itemize}')
 
 
