@@ -19,7 +19,7 @@ password=yourpassword
 socketpath=/var/run/gvm/gvmd.sock
 ```
 
-launch the scripts
+run the scripts
 ```
 gvm-script socket python/monthly-report-latex.gmp.py 04 2021
 ```
