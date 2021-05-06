@@ -104,10 +104,11 @@ def print_reports(gmp, from_date, to_date):
         )
 
     table = AsciiTable(table_data)
+    nservidores=len(assets_xml)
     print('\\begin{verbatim}')   
-    print(
-          'Busqueda de resultados desde {3} 00:00 a {4} 00:00 '
-        '\nVulnerabilidades Nivel:'
+    print( 'Numero total de servidores escaneados en el periodo = {5}'
+        '\nBusqueda de resultados desde {3} 00:00 a {4} 00:00 '
+        '\n\nVulnerabilidades Nivel:'
         '\n - High:   {0}'
         '\n - Medium: {1}'
         '\n - Low:    {2}\n'.format(
@@ -116,18 +117,16 @@ def print_reports(gmp, from_date, to_date):
             int(sum_low),
             from_date.isoformat(),
             to_date.isoformat(),
+            int(nservidores)
         )
     )
     print(
-          'Busqueda de resultados desde {3} 00:00 a {4} 00:00'
         '\nNumero de Servidores con vulnerabilidad:'
         '\n - High:   {0} = {1}% del total de servidores analizados'
         '\n - Medium: {2}\n'.format(
             int(server_high),
-            int(server_high*100/len(table_data)),
-            int(server_medium),
-            from_date.isoformat(),
-            to_date.isoformat(),
+            int(server_high*100/nservidores),
+            int(server_medium)
         )
     )
     print('\end{verbatim}')   
@@ -137,7 +136,7 @@ def print_reports(gmp, from_date, to_date):
     print('\end{verbatim}')   
 
 def print_report_vulns(gmp, from_date, to_date):
-    vulns_filter = "severity>7 sort-reverse=severity rows=-1"
+    vulns_filter = "severity>7 and newest>{0} sort-reverse=severity rows=-1".format(from_date.isoformat())
     vulns_xml = gmp.get_vulnerabilities(filter=vulns_filter)
     #pretty_print(vulns_xml)
     table_data_OS_vuln = [['Severity', 'name']]
@@ -151,6 +150,8 @@ def print_report_vulns(gmp, from_date, to_date):
            table_data_vuln.append([severity,name])
 
     print('\section{Top Vulnerabilidades }')   
+    print('Lista de vulnerabilidades del mes, filtro utilizado:')
+    print('\\begin{verbatim} '+vulns_filter+' \end{verbatim}')
     print('\subsection {Lista de vulneralidades End of Life}')
     print('\\begin{itemize}')
     for item in table_data_OS_vuln: print ('\\item \\begin{verbatim}'+ item[0] +', ' +item[1]+' \\end{verbatim}')
